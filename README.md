@@ -1,12 +1,20 @@
 # Polish Tax Information Assistant
 
-Produkcyjny backend serwisu do pozyskiwania i odpowiadania na pytania podatkowe w oparciu o stronę podatki.gov.pl. Aplikacja została napisana w TypeScript.
+Backend serwisu do automatycznego pozyskiwania informacji podatkowych ze strony podatki.gov.pl, zapisywania ich w wektorowej bazie danych i udostępniania API do zadawania pytań w oparciu o zgromadzoną wiedzę. Aplikacja została napisana w TypeScript z wykorzystaniem AI do przetwarzania języka naturalnego.
 
 ## Funkcje
 
 - Automatyczne pobieranie danych z mapy serwisu podatki.gov.pl co 4 godziny
 - Zapisywanie treści w bazie danych wektorowej Qdrant
 - API do zadawania pytań i uzyskiwania odpowiedzi na podstawie pobranych danych
+
+## Technologie
+
+- **Backend:** Node.js, TypeScript, Express.js (lub odpowiednik)
+- **Scraping:** Playwright
+- **Baza Danych:** Qdrant (wektorowa)
+- **AI/LLM:** OpenAI API
+- **Deployment:** Docker, PM2 (opcjonalnie)
 
 ## Wymagania
 
@@ -20,8 +28,8 @@ Produkcyjny backend serwisu do pozyskiwania i odpowiadania na pytania podatkowe 
 
 1. Sklonuj repozytorium:
    ```bash
-   git clone <repo>
-   cd <repo>
+   git clone <URL_REPOZYTORIUM>
+   cd <NAZWA_KATALOGU_REPO>
    ```
 
 2. Zainstaluj zależności:
@@ -134,12 +142,14 @@ Przykładowa odpowiedź:
 ```
 GET /health
 ```
+Zwraca status działania aplikacji (np. `{"status": "ok"}`).
 
 #### Metryki
 
 ```
 GET /metrics
 ```
+Zwraca metryki serwera w formacie Prometheus, przydatne do monitorowania wydajności.
 
 ### Przykład użycia z curl
 
@@ -173,6 +183,8 @@ Wszystkie opcje konfiguracyjne są dostępne w pliku `.env`. Najważniejsze z ni
 | PORT                | Port, na którym działa serwer                   | 3000             |
 | LOG_LEVEL           | Poziom logowania (debug, info, warn, error)     | info             |
 | SKIP_INITIAL_SCRAPE | Czy pomijać początkowe scrapowanie przy starcie | false            |
+
+**Ważne:** Klucze API (`OPENAI_API_KEY`, `QDRANT_API_KEY`) są danymi wrażliwymi. Przechowuj je bezpiecznie i nigdy nie umieszczaj ich bezpośrednio w kodzie ani nie dodawaj do repozytorium Git. Używaj pliku `.env` (który powinien być w `.gitignore`) do ich przechowywania.
 
 ## Licencja
 
