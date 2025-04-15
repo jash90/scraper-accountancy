@@ -54,7 +54,7 @@ export async function generateDescription(content: string, url: string): Promise
 export async function generateAnswer(question: string, relevantContent: string): Promise<string> {
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4', // or gpt-3.5-turbo
+      model: 'gpt-4o-mini', // or gpt-3.5-turbo
       messages: [
         {
           role: 'system',
