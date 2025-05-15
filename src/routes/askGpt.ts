@@ -90,15 +90,13 @@ export const askGptHandler: RequestHandler<ParamsDictionary, any, AskRequestBody
       'answer generation'
     );
 
-    console.log({content, links, title, keywords});
-
     timings.answerGeneration = answerTime;
 
     // Prepare response
     const responseStartTime = Date.now();
     const response: AskResponse = {
       answer: content,
-      source: links.join(', '),
+      source: links,
       timestamp: new Date().toISOString()
     };
 

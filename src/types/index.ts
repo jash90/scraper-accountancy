@@ -16,7 +16,7 @@ export interface AskRequestBody {
 // Response structure for the /ask endpoint
 export interface AskResponse {
   answer: string;
-  source: string;
+  source: string[] | string;
   timestamp: string;
 }
 
