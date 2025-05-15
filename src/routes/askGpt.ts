@@ -56,30 +56,30 @@ export const askGptHandler: RequestHandler<ParamsDictionary, any, AskRequestBody
     timings.validation = Date.now() - startTime;
     logger.info(`Received question: ${question}`);
 
-    // // Measure cache lookup time
-    // const cacheStartTime = Date.now();
-    // // Note that get is now async
-    // const cachedResponse = await questionCache.get(question);
-    // timings.cacheCheck = Date.now() - cacheStartTime;
+    // Measure cache lookup time
+    const cacheStartTime = Date.now();
+    // Note that get is now async
+    const cachedResponse = await questionCache.get(question);
+    timings.cacheCheck = Date.now() - cacheStartTime;
     
-    // if (cachedResponse) {
-    //   const totalTime = Date.now() - startTime;
-    //   timings.total = totalTime;
+    if (cachedResponse) {
+      const totalTime = Date.now() - startTime;
+      timings.total = totalTime;
       
-    //   logger.info(`Question answered from cache in ${totalTime}ms`, {
-    //     question,
-    //     timings,
-    //     cached: true
-    //   });
+      logger.info(`Question answered from cache in ${totalTime}ms`, {
+        question,
+        timings,
+        cached: true
+      });
       
-    //   // Return cached response with cache indicator but without timings
-    //   // Use createCleanResponse to ensure no timing data is included
-    //   res.status(200).json({
-    //     ...createCleanResponse(cachedResponse),
-    //     cached: true
-    //   });
-    //   return;
-    // }
+      // Return cached response with cache indicator but without timings
+      // Use createCleanResponse to ensure no timing data is included
+      res.status(200).json({
+        ...createCleanResponse(cachedResponse),
+        cached: true
+      });
+      return;
+    }
 
     // Cache miss, process the question
     logger.debug('Cache miss, generating answer', { question });
