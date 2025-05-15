@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { askHandler } from './ask';
+import { askGptHandler } from './askGpt';
 import { 
   healthHandler, 
   metricsHandler, 
@@ -11,6 +12,7 @@ const router = Router();
 
 // API endpoint to answer questions
 router.post('/api/ask', askHandler);
+router.post('/api/ask-gpt', askGptHandler);
 
 // Health and metrics endpoints
 router.get('/health', healthHandler);

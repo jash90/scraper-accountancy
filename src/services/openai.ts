@@ -74,4 +74,15 @@ export async function generateAnswer(question: string, relevantContent: string):
     logger.error(`Error generating answer for question "${question}":`, { error: error.message });
     throw error;
   }
-} 
+}
+
+export async function generateAnswerWithInternet(question: string): Promise<string> {
+  const response = await openai.responses.create({
+    model: "gpt-4o-mini",
+    tools: [{ type: "web_search_preview" }],
+    input: question,
+    instructions: "You are a helpful assistant who answers questions about Polish taxes based on the podatki.gov.pl website or government websites. Your answers should be concise, accurate and based solely on the podatki.gov.pl website or government websites. Return data in json format with the following structure {content: 'answer', links : ['link to source'], title: 'title based on content'}",
+  });
+
+  return response.output_text;
+}
