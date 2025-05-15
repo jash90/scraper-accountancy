@@ -1,7 +1,6 @@
 import OpenAI from 'openai';
 import logger from '../utils/logger';
 import { OPENAI_API_KEY } from '../config';
-import { instructions } from '../utils/constans';
 
 // Initialize OpenAI client
 export const openai = new OpenAI({
