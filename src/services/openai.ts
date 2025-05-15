@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import logger from '../utils/logger';
 import { OPENAI_API_KEY } from '../config';
+import { instructions } from '../utils/constans';
 
 // Initialize OpenAI client
 export const openai = new OpenAI({
@@ -75,14 +76,87 @@ export async function generateAnswer(question: string, relevantContent: string):
     throw error;
   }
 }
+export async function generateAnswerWithInternet(question: string): Promise<{content: string, links: string[], title: string, keywords: string[]}> {
+ const response = await openai.responses.create({
+  model: "gpt-4.1",
+  input: [
+    {
+      "role": "system",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Odpowiadaj na pytania na podstawie stron rządowych typu: podatki.gov.pl, przygotuj to tak aby mogło później źródłem wiedzy na konkretny temat, przygotuj tytuł, treść i słowa kluczowe, źródło gdzie znajdę te informacje w formacie json\n"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": question
+        }
+      ]
+    }
+  ],
+  text: {
+    "format": {
+      "type": "json_schema",
+      "name": "document",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The title of the document."
+          },
+          "content": {
+            "type": "string",
+            "description": "The main content of the document."
+          },
+          "keywords": {
+            "type": "array",
+            "description": "An array of keywords associated with the document.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "links": {
+            "type": "array",
+            "description": "An array of links related to the document.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "content",
+          "keywords",
+          "links"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  reasoning: {},
+  tools: [
+    {
+      "type": "web_search_preview",
+      "user_location": {
+        "type": "approximate",
+        "country": "PL"
+      },
+      "search_context_size": "high"
+    }
+  ],
+  temperature: 1,
+  max_output_tokens: 32768,
+  top_p: 1,
+  store: true
+});
 
-export async function generateAnswerWithInternet(question: string): Promise<string> {
-  const response = await openai.responses.create({
-    model: "gpt-4o-mini",
-    tools: [{ type: "web_search_preview" }],
-    input: question,
-    instructions: "You are a helpful assistant who answers questions about Polish taxes based on the podatki.gov.pl website or government websites. Your answers should be concise, accurate and based solely on the podatki.gov.pl website or government websites. Return data in json format with the following structure {content: 'answer', links : ['link to source'], title: 'title based on content'}",
-  });
 
-  return response.output_text;
+  return JSON.parse(response.output_text);
 }
